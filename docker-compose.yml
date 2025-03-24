@@ -1,0 +1,35 @@
+version: "3.7"
+services:
+
+  ddd_clean_architecture_mariadb:
+    container_name: ddd_clean_architecture_mariadb
+    restart: always
+    image: mariadb:10.6
+    working_dir: /opt/sqldump
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - "10591:3306"
+    networks:
+      ddd_clean_architecture:
+        aliases:
+          - ddd_clean_architecture_mariadb
+
+  ddd_clean_architecture_php:
+    user: dev:dev
+    container_name: ddd_clean_architecture_php
+    build: ./docker_config/php
+    restart: always
+    volumes:
+      - ./application:/var/www/ddd_clean_architecture
+      - ./docker_config/php/www2.conf:/usr/local/etc/php-fpm.d/www2.conf
+    working_dir: /var/www/ddd_clean_architecture
+    ports:
+      - "10592:9000"
+    networks:
+      ddd_clean_architecture:
+        aliases:
+          - ddd_clean_architecture_php
+
+networks:
+  ddd_clean_architecture:
